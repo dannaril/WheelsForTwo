@@ -1,0 +1,99 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"      
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+ 
+	 <ui:composition template="_template.xhtml">
+	  	<ui:define name="header">
+	  	#{msg.models}
+	  	</ui:define>
+	    <ui:define name="content">
+	    	<h:form id="form">
+
+			<p:dataTable widgetVar="modelsTable" var="model" value="#{modelBean.models}"
+					filteredValue="#{modelBean.modelsFilter}"
+					rows="10"
+					paginatorPosition="bottom"
+	                paginator="true"
+	                paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+	                selectionMode="single" selection="#{modelBean.selectedModel}" rowKey="#{model.id}">
+				
+				<p:ajax event="rowSelect" listener="#{modelBean.onRowSelect}" update=":form:carDetail"  onstart="PF('modelDialog').show();" />
+				
+				<f:facet name="header">
+			        List of Models
+			    </f:facet>
+
+				<p:column headerText="Model" filterBy="#{model.model}" filterMatchMode="contains">
+					<h:outputText value="#{model.model}" />
+				</p:column>
+				
+				<p:column filterBy="#{model.year}" headerText="Year" filterMatchMode="exact">
+		            <f:facet name="filter">
+		                <p:selectOneMenu onchange="PF('modelsTable').filter()" >
+		                    <f:selectItem itemLabel="Select One" itemValue="#{null}" noSelectionOption="true" />
+		                    <f:selectItems value="#{modelBean.yearsList}" />
+		                </p:selectOneMenu>
+		            </f:facet>
+		            <h:outputText value="#{model.year}" />
+		        </p:column>
+
+				<p:column headerText="Power" filterBy="#{model.power}" filterMatchMode="contains">
+					<h:outputText value="#{model.power}" />
+				</p:column>
+				
+				<p:column filterBy="#{model.brand}" headerText="Brand" filterMatchMode="exact">
+		            <f:facet name="filter">
+		                <p:selectOneMenu onchange="PF('modelsTable').filter()" >
+		                    <f:selectItem itemLabel="Select One" itemValue="#{null}" noSelectionOption="true" />
+		                    <f:selectItems value="#{modelBean.brandsList}" />
+		                </p:selectOneMenu>
+		            </f:facet>
+		            <h:outputText value="#{model.brand.name}" />
+		        </p:column>
+								
+				<p:column filterBy="#{model.category}" headerText="Category" filterMatchMode="exact">
+		            <f:facet name="filter">
+		                <p:selectOneMenu onchange="PF('modelsTable').filter()" >
+		                    <f:selectItem itemLabel="Select One" itemValue="#{null}" noSelectionOption="true" />
+		                    <f:selectItems value="#{modelBean.categoriesList}" />
+		                </p:selectOneMenu>
+		            </f:facet>
+		            <h:outputText value="#{model.category.name}" />
+		        </p:column>
+				
+				
+				<f:facet name="footer">
+			        In total there are #{fn:length(modelBean.models)} cars.
+			    </f:facet>
+			    
+    			
+			</p:dataTable>
+			
+			<p:dialog header="Car Info" id="modelDialog" widgetVar="modelDialog" modal="true" resizable="false">
+		        <p:outputPanel id="carDetail" style="text-align:center;">
+		            <p:panelGrid  columns="2" rendered="#{not empty modelBean.selectedModel}" layout="grid">
+		                <f:facet name="header">
+		                    <!--  p:graphicImage name="demo/images/car/#{dtSelectionView.selectedCar.brand}-big.gif"--> 
+		                    Model
+		                </f:facet>
+		 
+		                
+		                <h:outputText value="Id" />
+		                <h:outputText value="#{modelBean.selectedModel.id}" />
+		 
+		                <h:outputText value="Year" />
+		                <h:outputText value="#{modelBean.selectedModel.year}" />
+		 
+		                 <h:outputText value="Price" />
+		                <h:outputText value="#{modelBean.selectedModel.model}" />
+		            </p:panelGrid>
+		        </p:outputPanel>
+    		</p:dialog>
+
+		</h:form>
+	    </ui:define>
+    </ui:composition>
+</html>
